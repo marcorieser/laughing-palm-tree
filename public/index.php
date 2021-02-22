@@ -1,12 +1,14 @@
 <?php
 require_once __DIR__.'/../vendor/autoload.php';
 
-use Simplex\ContentLengthListener;
-use Simplex\GoogleListener;
+use Simplex\Framework;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
 use Symfony\Component\HttpKernel\Controller\ControllerResolver;
+use Symfony\Component\HttpKernel\HttpCache\Esi;
+use Symfony\Component\HttpKernel\HttpCache\HttpCache;
+use Symfony\Component\HttpKernel\HttpCache\Store;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 
@@ -23,7 +25,12 @@ $dispatcher = new EventDispatcher();
 $controllerResolver = new ControllerResolver();
 $argumentResolver = new ArgumentResolver();
 
-$framework = new Simplex\Framework($dispatcher, $matcher, $controllerResolver, $argumentResolver);
-$response = $framework->handle($request);
+$framework = new Framework($dispatcher, $matcher, $controllerResolver, $argumentResolver);
+$framework = new HttpCache(
+		$framework,
+		new Store(__DIR__.'/../cache'),
+		new Esi(),
+);
 
+$response = $framework->handle($request);
 $response->send();
