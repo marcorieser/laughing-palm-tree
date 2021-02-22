@@ -17,8 +17,8 @@ $context = new RequestContext();
 $matcher = new UrlMatcher($routes, $context);
 
 $dispatcher = new EventDispatcher();
-$dispatcher->addSubscriber(new ContentLengthListener());
-$dispatcher->addSubscriber(new GoogleListener());
+// $dispatcher->addSubscriber(new ContentLengthListener());
+// $dispatcher->addSubscriber(new GoogleListener());
 
 $controllerResolver = new ControllerResolver();
 $argumentResolver = new ArgumentResolver();
