@@ -5,6 +5,7 @@ namespace Simplex\Tests;
 use Calendar\Controller\LeapYearController;
 use PHPUnit\Framework\TestCase;
 use Simplex\Framework;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolverInterface;
@@ -28,6 +29,7 @@ class FrameworkTest extends TestCase {
 	}
 
 	public function testControllerResponse() {
+		$dispatcher = $this->createMock(EventDispatcher::class);
 		$matcher = $this->createMock(UrlMatcherInterface::class);
 
 		$matcher
@@ -49,7 +51,7 @@ class FrameworkTest extends TestCase {
 		$controllerResolver = new ControllerResolver();
 		$argumentResolver = new ArgumentResolver();
 
-		$framework = new Framework($matcher, $controllerResolver, $argumentResolver);
+		$framework = new Framework($dispatcher, $matcher, $controllerResolver, $argumentResolver);
 
 		$response = $framework->handle(new Request());
 
@@ -58,6 +60,7 @@ class FrameworkTest extends TestCase {
 	}
 
 	public function getFrameWorkForException($exception) : Framework {
+		$dispatcher = $this->createMock(EventDispatcher::class);
 		$matcher = $this->createMock(UrlMatcherInterface::class);
 
 		$matcher
@@ -73,6 +76,6 @@ class FrameworkTest extends TestCase {
 		$controllerResolver = $this->createMock(ControllerResolverInterface::class);
 		$argumentResolver = $this->createMock(ArgumentResolverInterface::class);
 
-		return new Framework($matcher, $controllerResolver, $argumentResolver);
+		return new Framework($dispatcher, $matcher, $controllerResolver, $argumentResolver);
 	}
 }
